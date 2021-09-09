@@ -34,6 +34,7 @@ import shutil
 import sys
 import textwrap
 from collections import UserString, defaultdict, UserDict
+from functools import lru_cache
 from pathlib import Path
 from typing import List, Dict
 
@@ -769,6 +770,7 @@ def dt_auto_widths(rows, table_width, min_widths, max_widths):
     # Limit to just the first 20 rows for speed.
     rows = rows[:20]
 
+    @lru_cache
     def calc_wraps(fld_, width_):
         """Calculate the wraps for a given field at the given width."""
         return sum([len(row_[fld_].wrap(width=width_))
