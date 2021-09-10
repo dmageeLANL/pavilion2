@@ -13,6 +13,7 @@ import subprocess
 import threading
 import time
 import uuid
+from functools import lru_cache
 from pathlib import Path
 from typing import Callable, Any
 
@@ -345,6 +346,7 @@ class TestAttributes:
         doc="A completely unique id for this test run (test id's can rotate).")
 
 
+@lru_cache(maxsize=500)
 def test_run_attr_transform(path):
     """A dir_db transformer to convert a test_run path into a dict of test
     attributes."""
