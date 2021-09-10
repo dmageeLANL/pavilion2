@@ -116,7 +116,11 @@ class ResultsCommand(commands.Command):
                 pass
 
         else:
+<<<<<<< HEAD
             fields = result_utils.BASE_FIELDS + args.key.replace(',',' ').split()
+=======
+            fields = result_utils.BASE_FIELDS + args.key
+>>>>>>> dmagee/dmagee/parallel_results
 
             output.draw_table(
                 outfile=self.outfile,
