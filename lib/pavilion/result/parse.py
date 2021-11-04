@@ -320,7 +320,8 @@ def parse_result(results: Dict, key: str, parser_cfg: Dict,
                 match_idx=match_idx,
                 log=log,
             )
-
+        except FileExistsError as err:
+            res = None
         except OSError as err:
             msg = "Error reading file: {}".format(err)
             log(msg)

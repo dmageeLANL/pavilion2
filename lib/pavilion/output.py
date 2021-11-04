@@ -36,6 +36,7 @@ import textwrap
 from collections import UserString, defaultdict, UserDict
 from pathlib import Path
 from typing import List, Dict
+from functools import lru_cache
 
 BLACK = 30
 RED = 31
@@ -755,6 +756,10 @@ def dt_auto_widths(rows, table_width, min_widths, max_widths):
     so on. Remaining extra space is distributed amongst the final tied
     columns. To limit how long this takes, this makes a best guess using
     the first 20 rows."""
+	
+    mxwidth = sum(max_widths.values())
+    if mxwidth <= table_width:
+        return max_widths
 
     fields = list(min_widths.keys())
 
@@ -765,6 +770,7 @@ def dt_auto_widths(rows, table_width, min_widths, max_widths):
     # Limit to just the first 20 rows for speed.
     rows = rows[:20]
 
+    @lru_cache(maxsize=256)
     def calc_wraps(fld_, width_):
         """Calculate the wraps for a given field at the given width."""
         return sum([len(row_[fld_].wrap(width=width_))

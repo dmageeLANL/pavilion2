@@ -5,6 +5,7 @@ from pavilion.result import parsers
 import pavilion.result.base
 import yaml_config as yc
 import subprocess
+from pathlib import Path
 
 
 class Command(parsers.ResultParser):
@@ -51,9 +52,13 @@ class Command(parsers.ResultParser):
         else:
             err = subprocess.STDOUT
 
+        cwd = Path(file.name).resolve()
+        cwd = (cwd.parent/'build').as_posix()
+
         try:
             proc = subprocess.Popen(
                 command,
+                cwd=cwd,
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=err,

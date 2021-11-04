@@ -3,6 +3,7 @@ and series."""
 
 import os
 import time
+import traceback
 from typing import TextIO, List
 
 from pavilion import commands
@@ -108,22 +109,22 @@ def get_statuses(pav_cfg, test_ids):
     :param pav_cfg: The Pavilion config.
     :param List[int] test_ids: A list of test ids to load.
     """
-
     test_statuses = []
 
     for test_id in test_ids:
         try:
             test = TestRun.load(pav_cfg, test_id)
-            test_statuses.append(status_from_test_obj(pav_cfg, test))
+            test_status=status_from_test_obj(pav_cfg, test)
 
         except (TestRunError, TestRunNotFoundError) as err:
-            test_statuses.append({
+            test_status = {
                 'test_id': test_id,
                 'name':    "",
                 'state':   STATES.UNKNOWN,
                 'time':    None,
                 'note':    "Test not found: {}".format(err)
-            })
+            }
+        test_statuses.append(test_status)
 
     return test_statuses
 
@@ -142,7 +143,8 @@ def print_status(statuses, outfile, json=False):
 """
 
     ret_val = 1
-    for stat in statuses:
+    lstat = len(statuses)
+    for i, stat in enumerate(statuses):
         if stat['note'] != "Test not found.":
             ret_val = 0
     if json:

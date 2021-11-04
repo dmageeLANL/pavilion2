@@ -15,6 +15,7 @@ import time
 import uuid
 from pathlib import Path
 from typing import Callable, Any
+from functools import lru_cache
 
 import pavilion.result.common
 from pavilion import builder
@@ -196,6 +197,12 @@ class TestAttributes:
 
         initial_attrs = initial_attrs if initial_attrs else {}
 
+        try:
+            owner = self.path.owner()
+        except KeyError:
+            owner = 'Kody'
+            pass
+
         attrs = {
             'build_only': None,
             'build_name': None,
@@ -208,7 +215,7 @@ class TestAttributes:
             'skipped':    None,
             'suite_path': None,
             'sys_name':   None,
-            'user':       self.path.owner(),
+            'user':       owner,
             'uuid':       None,
         }
 
@@ -344,7 +351,7 @@ class TestAttributes:
         name='uuid',
         doc="A completely unique id for this test run (test id's can rotate).")
 
-
+@lru_cache(maxsize=500)
 def test_run_attr_transform(path):
     """A dir_db transformer to convert a test_run path into a dict of test
     attributes."""
